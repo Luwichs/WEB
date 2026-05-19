@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis Cinemático Avanzado: MRUV y Dinámica Balística del Proyectil .50 BMG</title>
+    <style>
+        :root {
+            --bg-main: #0b0f19;
+            --bg-card: #131a26;
+            --bg-input: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-cyan: #06b6d4;
+            --accent-amber: #f59e0b;
+            --accent-emerald: #10b981;
+            --border: #334155;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--bg-main);
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        /* Barra de Navegación Superior */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(11, 15, 25, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 1rem 0;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--accent-cyan);
+        }
+
+        header {
+            background: linear-gradient(180deg, #111827 0%, var(--bg-main) 100%);
+            padding: 7rem 2rem 3rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.3rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+
+        header p {
+            margin: 0.75rem 0 0;
+            font-size: 1.1rem;
+            color: var(--accent-cyan);
+            font-family: monospace;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        section {
+            background-color: var(--bg-card);
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            scroll-margin-top: 5rem; /* Evita que el nav tape el título al scrollear */
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--accent-cyan);
+            padding-left: 0.75rem;
+        }
+
+        p, li {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            text-align: justify;
+        }
+
+        .formula-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 1.2rem;
+            margin: 1.5rem 0;
+        }
+
+        .formula-card {
+            background-color: var(--bg-main);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.2rem;
+            text-align: center;
+        }
+
+        .formula-card .math {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 1.4rem;
+            font-style: italic;
+            color: var(--text-primary);
+            margin-bottom: 0.3rem;
+            display: block;
+        }
+
+        .formula-card .desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Estructura del Dashboard */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel-controls {
+            background-color: var(--bg-main);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .panel-outputs {
+            background-color: #05070c;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--accent-cyan);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .control-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        select, input[type="range"] {
+            width: 100%;
+            background-color: var(--bg-input);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            padding: 0.5rem;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            height: 6px;
+            padding: 0;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--accent-cyan);
+            cursor: pointer;
+        }
+
+        .display-value {
+            font-family: monospace;
+            font-size: 1.2rem;
+            color: var(--accent-amber);
+            margin-top: 0.25rem;
+            font-weight: bold;
+        }
+
+        .telemetry-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-family: monospace;
+            font-size: 1rem;
+        }
+
+        .critical-value {
+            color: #ef4444;
+            text-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+            border: none;
+            transition: opacity 0.2s;
+        }
+
+        .btn-primary { background-color: var(--accent-cyan); color: var(--bg-main); }
+        .btn-secondary { background-color: transparent; color: var(--text-secondary); border: 1px solid var(--border); }
+        .btn:hover { opacity: 0.9; }
+
+        .canvas-container {
+            width: 100%;
+            background-color: #030508;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-top: 1.5rem;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 220px;
+        }
+
+        .bibliografia-list {
+            list-style-type: decimal;
+            padding-left: 1.2rem;
+        }
+
+        .bibliografia-list li {
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+            text-align: left;
+        }
+
+        footer {
+            text-align: center;
+            padding: 4rem;
+            color: var(--text-secondary);
+            font-family: monospace;
+            font-size: 0.8rem;
+            border-top: 1px solid var(--border);
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#marco-teorico">Marco Teórico</a>
+        <a href="#laboratorio">Laboratorio Digital</a>
+        <a href="#metodologia">Metodología Numérica</a>
+        <a href="#referencias">Referencias</a>
+    </nav>
+
+    <header>
+        <h1>Mecánica de Partículas: Análisis de Sistemas MRUV</h1>
+        <p>Modelado Determinista en Espacios Ortogonales y Dinámica Balística del Calibre .50 BMG</p>
+    </header>
+
+    <div class="container">
+
+        <section id="marco-teorico">
+            <h2>1. Fundamentación Cinemática del MRUV</h2>
+            <p>Un sistema dinámico se rige bajo un **Movimiento Rectilíneo Uniformemente Variado (MRUV)** cuando el vector aceleración de la partícula permanece invariante en magnitud y dirección a lo largo del dominio temporal. En términos del cálculo diferencial ordinario, esto se define como la constancia de la segunda derivada del vector de posición respecto al tiempo:</p>
+            
+            <p style="text-align: center; font-family: monospace; font-size: 1.2rem; color: var(--accent-cyan);">
+                \vec{a} = \frac{d\vec{v}}{dt} = \frac{d^2\vec{x}}{dt^2} = \vec{\text{cte}} \neq \vec{0}
+            </p>
+
+            <p>La integración definida de estas ecuaciones diferenciales temporales arroja el set de ecuaciones algebraicas fundamentales que gobiernan el comportamiento cinemático lineal de traslación:</p>
+
+            <div class="formula-grid">
+                <div class="formula-card">
+                    <span class="math">v_f = v_0 + a \cdot t</span>
+                    <span class="desc">Función de velocidad lineal de estado</span>
+                </div>
+                <div class="formula-card">
+                    <span class="math">x = x_0 + v_0 \cdot t + \frac{1}{2}a \cdot t^2</span>
+                    <span class="desc">Ecuación paramétrica de posición cuadrática</span>
+                </div>
+                <div class="formula-card">
+                    <span class="math">v_f^2 = v_0^2 + 2a \cdot \Delta x</span>
+                    <span class="desc">Ecuación de conservación independiente del tiempo</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="laboratorio">
+            <h2>2. Simulación Numérica: Trayectoria Balística Exterior (.50 BMG)</h2>
+            <p>El siguiente entorno realiza un análisis por componentes vectoriales ortogonales. Mientras que el eje vertical (Y) experimenta un **MRUV puro** provocado por el campo gravitatorio seleccionado, el eje horizontal (X) simula el decaimiento de velocidad debido a fuerzas disipativas fluidodinámicas de arrastre atmosférico.</p>
+            
+            <div class="dashboard">
+                <div class="panel-controls">
+                    <div class="control-group">
+                        <label for="rangeDist">Distancia de Telemetría (Alcance X):</label>
+                        <input type="range" id="rangeDist" min="500" max="3000" step="100" value="1500" oninput="resolverSistema()">
+                        <div class="display-value"><span id="valDist">1500</span> metros</div>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="selectEntorno">Entorno Gravitatorio (Aceleración g):</label>
+                        <select id="selectEntorno" onchange="resolverSistema()">
+                            <option value="9.80665">Tierra (g = 9.81 m/s²)</option>
+                            <option value="1.62">Luna (g = 1.62 m/s²)</option>
+                            <option value="3.71">Marte (g = 3.71 m/s²)</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="selectAltitud">Densidad del Aire (Altitud S.N.M):</label>
+                        <select id="selectAltitud" onchange="resolverSistema()">
+                            <option value="1.225">Nivel del Mar (1.225 kg/m³)</option>
+                            <option value="1.007">1500 metros (1.007 kg/m³)</option>
+                            <option value="0.000">Vacío Absoluto (0.000 kg/m³ - MRU Puro en X)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="panel-outputs">
+                    <div>
+                        <label style="color: var(--accent-cyan);">Vectores de Estado Obtenidos</label>
+                        <div class="telemetry-row">
+                            <span>Tiempo de Tránsito (&Delta;t):</span>
+                            <span class="text-primary" id="outTime">0.000 s</span>
+                        </div>
+                        <div class="telemetry-row">
+                            <span>Velocidad Horizontal (v_x):</span>
+                            <span class="text-primary" id="outVx">0.00 m/s</span>
+                        </div>
+                        <div class="telemetry-row">
+                            <span>Velocidad Vertical (v_y):</span>
+                            <span class="text-primary" id="outVy">0.00 m/s</span>
+                        </div>
+                        <div class="telemetry-row">
+                            <span>Velocidad Resultante (|v|):</span>
+                            <span class="text-primary" id="outVnet">0.00 m/s</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="telemetry-row" style="border-top: 1px solid var(--border); padding-top: 0.75rem;">
+                            <span style="font-weight: bold;">DEFLEXIÓN VERTICAL MÁXIMA (d_y):</span>
+                            <span class="critical-value" style="font-weight: bold; font-size: 1.25rem;" id="outDrop">0.00 m</span>
+                        </div>
+                        <div class="btn-container">
+                            <button class="btn btn-primary" onclick="resolverSistema()">Recalcular</button>
+                            <button class="btn btn-secondary" onclick="exportarDatosCSV()">Exportar CSV</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="canvasGrafico"></canvas>
+            </div>
+        </section>
+
+        <section id="metodologia">
+            <h2>3. Algoritmo de Integración y Modelado Atmosférico</h2>
+            <p>La aproximación analítica elemental del MRUV no contempla el rozamiento viscoso a velocidades supersónicas. Para mitigar esta desviación de datos, este laboratorio implementa la aproximación por el **Método Numérico de Euler**. El vector aceleración en el eje horizontal se recalcula iterativamente en pasos temporales discontinuos discretos de <code>dt = 0.0005 s</code> usando la función:</p>
+            <p style="text-align: center; font-family: monospace; font-size: 1.1rem; color: var(--accent-amber);">
+                a_x = - \frac{\rho \cdot v_{\text{net}} \cdot v_x \cdot C_d \cdot A}{2m}
+            </p>
+            <p>Dicho acoplamiento dinámico demuestra que la cinemática lineal horizontal decae exponencialmente, extendiendo de esta manera el tiempo total de vuelo, provocando que la aceleración constante vertical (MRUV) actúe con mayor severidad sobre la deflexión de la trayectoria del proyectil.</p>
+        </section>
+
+        <section id="referencias">
+            <h2>4. Fuentes y Referencias Académicas</h2>
+            <ol class="bibliografia-list">
+                <li>Sears, F. W., Zemansky, M. W., Young, H. D., & Freedman, R. A. (2013). *Física Universitaria*. Volumen 1. Pearson Educación.</li>
+                <li>McCoy, R. L. (1999). *Modern Exterior Ballistics: The Launch and Flight Dynamics of Symmetric Projectiles*. Schiffer Publishing.</li>
+                <li>Organización de Aviación Civil Internacional. (1993). *Manual de la atmósfera estándar de la OACI*. Documento Doc 7488/3.</li>
+            </ol>
+        </section>
+    </div>
+
+    <footer>
+        UNIVERSIDAD - DEPARTAMENTO DE FÍSICA Y MECÁNICA RACIONAL // MODELO MRUV VERSIÓN GLOBAL 2026
+    </footer>
+
+    <script>
+        let datosExportables = []; // Matriz global de almacenamiento numérico
+
+        function resolverSistema() {
+            const xTarget = parseFloat(document.getElementById('rangeDist').value);
+            document.getElementById('valDist').innerText = xTarget;
+
+            const g = parseFloat(document.getElementById('selectEntorno').value);
+            const rho = parseFloat(document.getElementById('selectAltitud').value);
+
+            // Parámetros Físicos de la Munición .50 BMG (M2 Ball)
+            const v0 = 853.0; 
+            const m = 0.0458; 
+            const area = 0.0001267; 
+            const cd = 0.295; 
+
+            let t = 0.0;
+            let x = 0.0;
+            let y = 0.0;
+            let vx = v0;
+            let vy = 0.0;
+            const dt = 0.0005;
+
+            datosExportables = [["Tiempo (s)", "Distancia X (m)", "Caida Y (m)", "Vx (m/s)", "Vy (m/s)"]];
+            let trayectoria = [];
+
+            while (x < xTarget) {
+                let vNet = Math.sqrt(vx*vx + vy*vy);
+                let fd = 0.5 * rho * vNet * vx * cd * area;
+                let ax = -(fd / m);
+                let ay = g; 
+
+                vx += ax * dt;
+                vy += ay * dt;
+                x += vx * dt;
+                y += vy * dt;
+                t += dt;
+
+                trayectoria.push({x: x, y: y});
+                // Guardado de paso de telemetría cada 0.05 segundos para evitar archivos masivos
+                if(Math.round(t*1000) % 50 === 0) {
+                    datosExportables.push([t.toFixed(4), x.toFixed(2), y.toFixed(2), vx.toFixed(2), vy.toFixed(2)]);
+                }
+            }
+
+            document.getElementById('outTime').innerText = t.toFixed(4) + " s";
+            document.getElementById('outVx').innerText = vx.toFixed(2) + " m/s";
+            document.getElementById('outVy').innerText = vy.toFixed(2) + " m/s";
+            document.getElementById('outVnet').innerText = Math.sqrt(vx*vx + vy*vy).toFixed(2) + " m/s";
+            document.getElementById('outDrop').innerText = y.toFixed(2) + " m";
+
+            dibujarGrafica(xTarget, y, trayectoria);
+        }
+
+        function dibujarGrafica(maxX, maxY, puntos) {
+            const canvas = document.getElementById('canvasGrafico');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Rejilla de Ingenieria
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 1;
+            for(let i=0; i<canvas.width; i+=50) {
+                ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
+            }
+            for(let j=0; j<canvas.height; j+=40) {
+                ctx.beginPath(); ctx.moveTo(0, j); ctx.lineTo(canvas.width, j); ctx.stroke();
+            }
+
+            const padX = 50; const padY = 25;
+            const rw = canvas.width - padX*2; const rh = canvas.height - padY*2;
+
+            // Curva Dinámica
+            ctx.beginPath();
+            ctx.strokeStyle = '#06b6d4';
+            ctx.lineWidth = 3;
+            for(let k=0; k<puntos.length; k++) {
+                let px = padX + (puntos[k].x / maxX) * rw;
+                let py = padY + (puntos[k].y / maxY) * rh;
+                if(k === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.stroke();
+
+            // Intersección de Impacto
+            ctx.beginPath();
+            ctx.arc(padX + rw, padY + rh, 6, 0, 2*Math.PI);
+            ctx.fillStyle = '#ef4444';
+            ctx.fill();
+
+            // Texto de Ejes
+            ctx.fillStyle = '#64748b';
+            ctx.font = '11px monospace';
+            ctx.fillText("Boca del Cañón (0,0)", 15, 20);
+            ctx.fillText("Alcance Horizontal: " + maxX + " m", canvas.width - 200, canvas.height - 8);
+            ctx.fillText("Deflexión: -" + maxY.toFixed(2) + " m", canvas.width - 150, padY + rh - 10);
+        }
+
+        function exportarDatosCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,";
+            datosExportables.forEach(row => {
+                csvContent += row.join(",") + "\n";
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "telemetria_mruv_50bmg.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        window.addEventListener('resize', resolverSistema);
+        resolverSistema();
+    </script>
+</body>
+</html>
