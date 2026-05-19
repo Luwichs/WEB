@@ -3,349 +3,493 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MRUV y Balística de Precisión</title>
+    <title>Análisis Cinemático del MRUV y Dinámica Balística del Proyectil .50 BMG</title>
     <style>
         :root {
-            --primary: #1a365d;
-            --secondary: #2b6cb0;
-            --accent: #e53e3e;
-            --dark: #2d3748;
-            --light: #f7fafc;
-            --muted: #4a5568;
+            --bg-main: #0f172a;
+            --bg-card: #1e293b;
+            --bg-input: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-cyan: #38bdf8;
+            --accent-amber: #f59e0b;
+            --accent-emerald: #10b981;
+            --border: #475569;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
             line-height: 1.6;
-            color: var(--dark);
-            background-color: var(--light);
+            color: var(--text-primary);
+            background-color: var(--bg-main);
             margin: 0;
             padding: 0;
         }
 
         header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 4rem 2rem;
+            background: linear-gradient(180deg, #1e1b4b 0%, var(--bg-main) 100%);
+            padding: 4rem 2rem 2rem 2rem;
             text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border-bottom: 1px solid var(--border);
         }
 
         header h1 {
             margin: 0;
-            font-size: 2.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-size: 2.4rem;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            color: var(--text-primary);
         }
 
         header p {
             margin: 1rem 0 0;
-            font-size: 1.3rem;
-            opacity: 0.9;
+            font-size: 1.1rem;
+            color: var(--accent-cyan);
+            font-family: 'Courier New', monospace;
         }
 
         .container {
-            max-width: 1000px;
-            margin: 3rem auto;
-            padding: 0 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
         }
 
         section {
-            background: white;
+            background-color: var(--bg-card);
             padding: 2.5rem;
             margin-bottom: 2.5rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-            overflow: hidden;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
         }
 
         h2 {
-            color: var(--primary);
-            border-bottom: 2px solid var(--secondary);
-            padding-bottom: 0.75rem;
+            font-size: 1.6rem;
+            color: var(--text-primary);
             margin-top: 0;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-left: 4px solid var(--accent-cyan);
+            padding-left: 0.75rem;
         }
 
         h3 {
-            color: var(--secondary);
-            margin-top: 2rem;
-        }
-
-        .formula-box {
-            background-color: #edf2f7;
-            border-left: 5px solid var(--secondary);
-            padding: 1rem;
-            margin: 1rem 0;
-            font-family: 'Courier New', Courier, monospace;
             font-size: 1.2rem;
-            overflow-x: auto;
-            color: var(--primary);
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
+            color: var(--accent-cyan);
             margin-top: 1.5rem;
         }
 
-        .card {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            padding: 1rem;
-            border-radius: 6px;
+        p, li {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            text-align: justify;
         }
 
-        /* Formato de imágenes integradas */
-        .img-inline-right {
-            max-width: 350px;
-            height: auto;
-            float: right;
-            margin: 0 0 1.5rem 1.5rem;
+        ul {
+            padding-left: 1.2rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        code {
+            font-family: 'Fira Code', 'Courier New', monospace;
+            background-color: var(--bg-main);
+            color: var(--accent-amber);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+
+        .formula-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.2rem;
+            margin: 1.5rem 0;
+        }
+
+        .formula-card {
+            background-color: var(--bg-main);
+            border: 1px solid var(--border);
             border-radius: 8px;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-            border: 2px solid #e2e8f0;
+            padding: 1.2rem;
+            text-align: center;
         }
 
-        .img-trajectory {
+        .formula-card .math {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 1.4rem;
+            font-style: italic;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
             display: block;
-            max-width: 100%;
-            height: auto;
-            margin: 2rem auto;
-            border-radius: 10px;
-            border: 3px solid #e2e8f0;
-            box-shadow: 0 5px 12px rgba(0,0,0,0.15);
         }
 
-        .img-rifle-context {
-            max-width: 250px;
-            height: auto;
-            float: left;
-            margin: 1.5rem 1.5rem 1rem 0;
-            border-radius: 6px;
-            border: 1px solid #718096;
-            opacity: 0.8;
+        .formula-card .desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            display: block;
         }
 
-        @media (max-width: 700px) {
-            .img-inline-right, .img-rifle-context {
-                float: none;
-                max-width: 100%;
-                margin: 1rem auto;
-                display: block;
+        /* Dashboard de Simulación */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard {
+                grid-template-columns: 1fr;
             }
         }
 
-        /* Estilos del Simulador Balístico */
-        .simulator {
-            background: linear-gradient(145deg, #2d3748, #1a202c);
-            color: white;
-            border-radius: 10px;
-            padding: 2.5rem;
-            border: 1px solid #4a5568;
+        .panel-controls {
+            background-color: var(--bg-main);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
         }
 
-        .simulator h2 {
-            color: #fff;
-            border-bottom-color: var(--accent);
+        .panel-outputs {
+            background-color: #0b0f19;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--accent-cyan);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
-        .form-group {
-            margin-bottom: 2rem;
-            clear: both;
+        .control-group {
+            margin-bottom: 1.5rem;
         }
 
         label {
             display: block;
-            margin-bottom: 0.75rem;
-            font-weight: bold;
-            font-size: 1.1rem;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         input[type="range"] {
             width: 100%;
-            margin-bottom: 0.5rem;
+            height: 6px;
+            background: var(--bg-input);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--accent-cyan);
             cursor: pointer;
+            box-shadow: 0 0 8px var(--accent-cyan);
         }
 
-        .range-value {
-            font-size: 1.4rem;
-            color: #f6ad55;
-            font-weight: bold;
-            text-align: center;
-            background: #1a202c;
-            padding: 0.5rem;
-            border-radius: 4px;
-        }
-
-        .btn {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            width: 100%;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: background 0.3s, transform 0.1s;
-        }
-
-        .btn:hover {
-            background: #c53030;
-        }
-        
-        .btn:active {
-            transform: scale(0.98);
-        }
-
-        .results {
-            margin-top: 2rem;
-            background: rgba(0,0,0,0.3);
-            padding: 1.5rem;
-            border-radius: 8px;
-            border-left: 5px solid var(--accent);
-        }
-
-        .results p {
-            margin: 0.75rem 0;
+        .display-value {
             font-family: monospace;
-            font-size: 1.1rem;
-            color: #e2e8f0;
+            font-size: 1.3rem;
+            color: var(--accent-amber);
+            margin-top: 0.25rem;
+            font-weight: bold;
+        }
+
+        .telemetry-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-family: monospace;
+            font-size: 1.05rem;
+        }
+
+        .telemetry-row:last-child {
+            border-bottom: none;
+        }
+
+        .telemetry-label {
+            color: var(--text-secondary);
+        }
+
+        .telemetry-value {
+            color: var(--text-primary);
+            font-weight: bold;
+        }
+
+        .critical-value {
+            color: #ef4444;
+            text-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+        }
+
+        /* Gráfico Vectorial Animado por Código (Canvas) */
+        .canvas-container {
+            width: 100%;
+            background-color: #05070c;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-top: 1rem;
+            position: relative;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 200px;
         }
 
         footer {
             text-align: center;
             padding: 3rem;
-            background: var(--dark);
-            color: white;
-            margin-top: 5rem;
-            border-top: 5px solid var(--primary);
+            color: var(--text-secondary);
+            font-family: monospace;
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Física del Movimiento Variado</h1>
-        <p>Análisis conceptual del MRUV aplicado a la Balística de Largo Alcance (.50 BMG)</p>
+        <h1>Mecánica Racional: Cinemática del MRUV</h1>
+        <p>Sistemas del Eje de Coordenadas Ortogonales y Balística Exterior Computada</p>
     </header>
 
     <div class="container">
 
         <section>
-            <h2>1. ¿Qué es el MRUV? (Descripción Extensa)</h2>
+            <h2>1. Definición Formal y Ecuaciones Diferenciales</h2>
+            <p>El <strong>Movimiento Rectilíneo Uniformemente Variado (MRUV)</strong> queda definido cinemáticamente cuando la derivada de la velocidad respecto al tiempo es una constante no nula, lo que implica que la segunda derivada de la posición respecto al tiempo es idéntica a dicha constante. Formalmente:</p>
             
-            <img src="http://googleusercontent.com/image_collection/image_retrieval/2979942913222313782_0" alt="Gráfica conceptual de MRUV" class="img-inline-right">
+            <p style="text-align: center; font-family: monospace; font-size: 1.2rem; color: var(--accent-cyan);">
+                a = dv/dt = d²x/dt² = constante ≠ 0
+            </p>
 
-            <p>El <strong>Movimiento Rectilíneo Uniformemente Variado (MRUV)</strong>, conocido en algunas regiones como MRUA (Acelerado), es un tipo de movimiento fundamental en la cinemática. Se define por dos condiciones estrictas: el objeto se desplaza a lo largo de una <strong>trayectoria rectilínea</strong> (en línea recta) y experimenta una <strong>aceleración que permanece constante</strong> en magnitud, dirección y sentido durante todo el intervalo de tiempo analizado.</p>
-            
-            <p>A diferencia del Movimiento Rectilíneo Uniforme (MRU), donde la velocidad es constante y la aceleración es nula, en el MRUV la velocidad cambia de manera uniforme. Esto significa que en intervalos de tiempo iguales (por ejemplo, cada segundo), la velocidad del móvil aumenta (o disminuye) exactamente en la misma cantidad (los m/s ganados o perdidos por segundo son constantes).</p>
-            
-            <h3>Conceptos y Magnitudes Clave:</h3>
-            <ul>
-                <li><strong>Posición (d o x):</strong> El lugar que ocupa el cuerpo en el espacio respecto a un punto de referencia establecido. Se mide en metros (m).</li>
-                <li><strong>Velocidad Inicial (v₀):</strong> La velocidad que posee el cuerpo justo al inicio del intervalo de tiempo que estamos observando (en el instante <span style="font-family:monospace;">t = 0</span>). Se mide en m/s.</li>
-                <li><strong>Velocidad Final (v<sub>f</sub>):</strong> La velocidad instantánea del cuerpo al término del intervalo de tiempo analizado. Se mide en m/s.</li>
-                <li><strong>Aceleración (a):</strong> La tasa constante de cambio de la velocidad por unidad de tiempo. Si es positiva, la velocidad aumenta (acelerado); si es negativa, disminuye (retardado). Se mide en metros por segundo al cuadrado (m/s²).</li>
-                <li><strong>Tiempo (t):</strong> La duración del movimiento estudiado. Se mide en segundos (s).</li>
-            </ul>
-        </section>
+            <p>A través de la integración consecutiva de esta ecuación diferencial ordinaria con condiciones iniciales de contorno para el tiempo <code>t = 0</code> (donde la posición es <code>x₀</code> y la velocidad es <code>v₀</code>), se deducen las ecuaciones de estado que gobiernan el sistema coordenado:</p>
 
-        <section>
-            <h2>2. Operadores Matemáticos y Ecuaciones del MRUV</h2>
-            <p>Para resolver problemas de MRUV se utilizan cuatro ecuaciones principales. Los operadores principales involucrados son la suma (+), la resta, la multiplicación (×), la división (/) y la potenciación al cuadrado (²).</p>
-            
-            <h3>Ecuación 1: Velocidad en función del tiempo (Sin Distancia)</h3>
-            <div class="formula-box">v_f = v_0 + (a * t)</div>
-
-            <h3>Ecuación 2: Distancia en función del tiempo</h3>
-            <div class="formula-box">d = (v_0 * t) + (0.5 * a * t²)</div>
-
-            <h3>Ecuación 3: Velocidad en función de la distancia (Sin Tiempo)</h3>
-            <div class="formula-box">v_f² = v_0² + (2 * a * d)</div>
-
-            <h3>Ecuación 4: Distancia media (Basada en Promedios)</h3>
-            <div class="formula-box">d = [ (v_0 + v_f) / 2 ] * t</div>
-        </section>
-
-        <section class="simulator">
-            <h2>3. Aplicación Práctica: Balística de un Barret Cal. .50</h2>
-
-            <img src="http://googleusercontent.com/image_collection/image_retrieval/10070791918516705291_0" alt="Fusil de precisión calibre .50" class="img-rifle-context">
-
-            <p>En el eje horizontal (X), una bala experimenta una desaceleración por la resistencia del aire. Sin embargo, en el **eje vertical (Y)**, desde el microsegundo en que el proyectil abandona el cañón de un fusil de precisión **Barret Calibre .50 BMG**, este entra en un régimen de MRUV provocado estrictamente por la **gravedad de la Tierra (g ≈ 9.81 m/s²)**.</p>
-            
-            <p>Asumiendo un disparo perfectamente horizontal (ángulo 0°), la bala viaja hacia adelante a una velocidad inicial promedio altísima, pero cae hacia el suelo con una velocidad inicial vertical de 0 m/s y una aceleración constante de 9.81 m/s² hacia el centro de la Tierra, generando una trayectoria parabólica.</p>
-
-            <img src="http://googleusercontent.com/image_collection/image_retrieval/12967335931675704115_0" alt="Gráfica de trayectoria y caída por gravedad" class="img-trajectory">
-
-            <hr style="border-color: #4a5568; margin: 2rem 0; clear:both;">
-
-            <div class="form-group">
-                <label for="distanceRange">Selecciona la distancia del objetivo (Metros):</label>
-                <input type="range" id="distanceRange" min="500" max="3000" step="100" value="1500" oninput="updateDistance(this.value)">
-                <div class="range-value"><span id="distanceLabel">1500</span> metros</div>
-            </div>
-
-            <div class="grid">
-                <div class="card" style="color: #2d3748;">
-                    <strong>Telemetría del Proyectil (Datos Iniciales):</strong><br>
-                    • Munición: .50 BMG (M2 Ball)<br>
-                    • Velocidad Salida (v₀ Horizontal Promedio): 853 m/s<br>
-                    • Coeficiente de Aceleración Vertical (Gravedad g): 9.81 m/s²
+            <div class="formula-grid">
+                <div class="formula-card">
+                    <span class="math">v<sub>f</sub> = v<sub>0</sub> + a · t</span>
+                    <span class="desc">Función lineal de la velocidad</span>
+                </div>
+                <div class="formula-card">
+                    <span class="math">x = x<sub>0</sub> + v<sub>0</sub>·t + ½·a·t²</span>
+                    <span class="desc">Función cuadrática de la posición</span>
+                </div>
+                <div class="formula-card">
+                    <span class="math">v<sub>f</sub>² = v<sub>0</sub>² + 2·a·Δx</span>
+                    <span class="desc">Teorema de Torricelli (Independiente del tiempo)</span>
+                </div>
+                <div class="formula-card">
+                    <span class="math">Δx = [ (v<sub>0</sub> + v<sub>f</sub>) / 2 ] · t</span>
+                    <span class="desc">Desplazamiento por velocidad media</span>
                 </div>
             </div>
-            
-            <br>
-            <button class="btn" onclick="calcularCaida()">Calcular Caída Cinemática</button>
 
-            <div class="results" id="resultadosContenedor">
-                <h3>Resultados de la Telemetría Computada:</h3>
-                <p>• Tiempo de vuelo estimado hasta el objetivo (t): <span id="resTiempo">0.000</span> segundos</p>
-                <p>• Velocidad vertical de impacto (v_fy): <span id="resVelocidadY">0.00</span> m/s</p>
-                <p style="font-size: 1.4rem; color: #f6ad55; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">• CAÍDA TOTAL DEL PROYECTIL (d_y): <span id="resCaida">0.00</span> metros</p>
+            <p>El carácter vectorial del MRUV exige una estricta correspondencia de signos algebraicos. Si los vectores de velocidad instantánea <code>v(t)</code> y aceleración <code>a</code> poseen el mismo sentido físico, el producto escalar es positivo (<code>a · v > 0</code>), categorizándose como un movimiento rectilíneo uniformemente acelerado. Si poseen sentidos opuestos, el producto escalar es negativo (<code>a · v < 0</code>), manifestando un desaceleramiento o movimiento retardado.</p>
+        </section>
+
+        <section>
+            <h2>2. Laboratorio Computacional: Trayectoria del Proyectil .50 BMG (M2 Ball)</h2>
+            <p>Modelado bidimensional de un disparo horizontal absoluto empleando un sistema de armas de alta precisión <strong>Barret M82A1</strong>. El eje de ordenadas horizontal (X) obedece a un decaimiento de velocidad debido al coeficiente de arrastre aerodinámico (Drag), mientras que el eje de coordenadas vertical (Y) experimenta un <strong>MRUV puro (Caída Libre)</strong> regido por la aceleración de la gravedad constante <code>g = 9.80665 m/s²</code>.</p>
+            
+            <div class="dashboard">
+                <div class="panel-controls">
+                    <div class="control-group">
+                        <label for="rangeDist">Distancia de Telemetría (Eje X):</label>
+                        <input type="range" id="rangeDist" min="500" max="3000" step="100" value="1500" oninput="ejecutarCalculo()">
+                        <div class="display-value"><span id="valDist">1500</span> m</div>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Constantes de Entrada Fijas (Estándar OTAN):</label>
+                        <ul>
+                            <li>Masa del proyectil: <code>45.8 gramos (707 grains)</code></li>
+                            <li>Velocidad inicial en boca (v₀): <code>853 m/s</code></li>
+                            <li>Aceleración gravitatoria (g): <code>9.80665 m/s²</code></li>
+                            <li>Coeficiente Balístico G1 (Aproximado): <code>0.670</code></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="panel-outputs">
+                    <div>
+                        <label style="color: var(--accent-cyan);">Datos del Vector de Estado</label>
+                        
+                        <div class="telemetry-row">
+                            <span class="telemetry-label">Tiempo de Vuelo Registrado (Δt):</span>
+                            <span class="telemetry-value"><span id="outTime">0.000</span> s</span>
+                        </div>
+                        <div class="telemetry-row">
+                            <span class="telemetry-label">Velocidad Horizontal de Impacto (v_x):</span>
+                            <span class="telemetry-value"><span id="outVx">0.00</span> m/s</span>
+                        </div>
+                        <div class="telemetry-row">
+                            <span class="telemetry-label">Velocidad Vertical Adquirida (v_y):</span>
+                            <span class="telemetry-value"><span id="outVy">0.00</span> m/s</span>
+                        </div>
+                        <div class="telemetry-row">
+                            <span class="telemetry-label">Magnitud del Vector Velocidad Neto (|v|):</span>
+                            <span class="telemetry-value"><span id="outVnet">0.00</span> m/s</span>
+                        </div>
+                    </div>
+
+                    <div class="telemetry-row" style="border-top: 2px solid var(--border); padding-top: 1rem; margin-top: 1rem;">
+                        <span class="telemetry-label" style="font-size: 1.1rem; color: var(--text-primary);">DEFLEXIÓN VERTICAL CRÍTICA (d_y):</span>
+                        <span class="telemetry-value critical-value" style="font-size: 1.4rem;"><span id="outDrop">0.00</span> m</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="canvasBalistico"></canvas>
             </div>
         </section>
 
         <section>
-            <h2>4. Desglose de los Operadores Matemáticos en el Cálculo Balístico</h2>
-            <p>El simulador superior resuelve el problema utilizando dos fases cinemáticas combinadas, descomponiendo la trayectoria:</p>
-            <ol>
-                <li><strong>Fase Horizontal (MRU):</strong> Primero calcula cuánto tiempo tardará la bala en cubrir la distancia lineal al objetivo, usando el operador división: <br><code>t = distancia / velocidad_horizontal_promedio</code>.</li>
-                <li><strong>Fase Vertical (MRUV / Caída Libre):</strong> Con el tiempo obtenido (<span style="font-family: monospace;">t</span>), calculamos cuántos metros cae la bala debido a la gravedad usando la Ecuación 2 del MRUV, donde sabemos que la <span style="font-family: monospace;">v₀_vertical = 0</span> y la <span style="font-family: monospace;">a_vertical = g</span>:<br> <code>Caída Vertical (d_y) = 0.5 * g * (t²)</code>. <br>Aquí usamos la multiplicación por 0.5 y la potenciación cuadrada.</li>
-            </ol>
-            <p><em>Nota técnica importante: En la realidad (balística exterior), la resistencia aerodinámica reduce progresivamente la velocidad horizontal de la bala. Esto hace que el tiempo de vuelo real sea mayor, provocando que la caída real sea más drástica de lo que predice el MRUV puro. ¡A 3000 metros, la bala cae más de 120 metros!</em></p>
+            <h2>3. Formulación del Algoritmo y Dinámica del Movimiento Retardado</h2>
+            <p>A distancias extremas (intersección entre 500 m y 3000 m), el cálculo lineal elemental de la cinemática clásica induce a un error crítico. Este simulador implementa el método de integración de Euler para calcular la pérdida de energía cinética horizontal simultánea al MRUV vertical. La desaceleración en el eje X responde a la función del diferencial de la fuerza de resistencia de fluidos:</p>
+            
+            <p style="text-align: center; font-family: monospace; font-size: 1.1rem; color: var(--accent-amber);">
+                F_d = ½ · ρ · v² · C_d · A &rArr; a_x = - (F_d / m)
+            </p>
+
+            <p>Mientras la componente horizontal disminuye de forma exponencial decreciente en base a la densidad atmosférica estándar (<code>ρ = 1.225 kg/m³</code>), el vector vertical es gobernado por la función puramente acelerada del MRUV. Al integrar ambos comportamientos algebraicos en intervalos de tiempo infinitesimales (<code>dt = 0.001 s</code>), se computa la geometría real de la caída del proyectil balístico.</p>
         </section>
 
     </div>
 
     <footer>
-        <p>Página de Divulgación Física - Creada para Almacenamiento Interactivo en GitHub Pages</p>
+        <p>SISTEMA DE COMPULSA BALÍSTICA // ESPECIFICACIONES RECTILÍNEAS VARIADAS // 2026</p>
     </footer>
 
     <script>
-        function updateDistance(val) {
-            document.getElementById('distanceLabel').innerText = val;
+        function ejecutarCalculo() {
+            // Captura de datos del DOM
+            const xTarget = parseFloat(document.getElementById('rangeDist').value);
+            document.getElementById('valDist').innerText = xTarget;
+
+            // Constantes Físicas Reales para Munición .50 BMG M2 Ball
+            const g = 9.80665;
+            const v0 = 853.0; // Velocidad de salida inicial m/s
+            const m = 0.0458; // masa en kg
+            const rho = 1.225; // kg/m^3 densidad del aire estándar
+            const area = 0.000127; // Área transversal de un proyectil calibre .50 (12.7mm)
+            const cd = 0.295; // Coeficiente de arrastre aerodinámico para ojiva supersónica estilizada
+
+            // Inicialización de Variables de Estado Cinemático
+            let t = 0.0;
+            let x = 0.0;
+            let y = 0.0;
+            let vx = v0;
+            let vy = 0.0;
+            const dt = 0.0005; // Delta tiempo de alta resolución para la integración
+
+            // Matriz para guardar puntos de la trayectoria para el renderizado
+            let trayectoria = [];
+
+            // Bucle iterativo de integración numérica (Método de Euler acoplado)
+            while (x < xTarget) {
+                // Eje X: Dinámica de Fluidos (Aceleración Variable Negativa)
+                let vNet = Math.sqrt(vx*vx + vy*vy);
+                let fd = 0.5 * rho * vNet * vx * cd * area;
+                let ax = -(fd / m);
+                
+                // Eje Y: Movimiento Rectilíneo Uniformemente Variado (Gravedad Constante)
+                let ay = g; 
+
+                // Actualización de los vectores velocidad
+                vx += ax * dt;
+                vy += ay * dt;
+
+                // Actualización del diferencial de posición
+                x += vx * dt;
+                y += vy * dt;
+                t += dt;
+
+                // Muestreo para el gráfico (guardar coordenadas relativas)
+                trayectoria.push({x: x, y: y});
+            }
+
+            // Inyección de Telemetría Resultante en el HTML
+            document.getElementById('outTime').innerText = t.toFixed(4);
+            document.getElementById('outVx').innerText = vx.toFixed(2);
+            document.getElementById('outVy').innerText = vy.toFixed(2);
+            document.getElementById('outVnet').innerText = Math.sqrt(vx*vx + vy*vy).toFixed(2);
+            document.getElementById('outDrop').innerText = y.toFixed(2);
+
+            // Renderizado en el elemento Canvas
+            dibujarGrafica(xTarget, y, trayectoria);
         }
 
-        function calcularCaida() {
-            const distancia = parseFloat(document.getElementById('distanceRange').value);
-            const v0_horizontal_avg = 853; 
-            const g = 9.81;
+        function dibujarGrafica(maxX, maxY, puntos) {
+            const canvas = document.getElementById('canvasBalistico');
+            const ctx = canvas.getContext('2d');
             
-            const tiempo = distancia / v0_horizontal_avg;
-            const caida_y = 0.5 * g * Math.pow(tiempo, 2);
-            const v_fy = g * tiempo;
+            // Ajustar resolución interna al tamaño del layout del DOM
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
 
-            document.getElementById('resTiempo').innerText = tiempo.toFixed(3);
-            document.getElementById('resVelocidadY').innerText = v_fy.toFixed(2);
-            document.getElementById('resCaida').innerText = caida_y.toFixed(2);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Renderizar Retícula de Fondo (Grid Militar de Medición)
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 1;
+            for(let i=0; i<canvas.width; i+=40) {
+                ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
+            }
+            for(let j=0; j<canvas.height; j+=30) {
+                ctx.beginPath(); ctx.moveTo(0, j); ctx.lineTo(canvas.width, j); ctx.stroke();
+            }
+
+            // Mapeo escalar de datos a píxeles del Canvas
+            const paddingX = 40;
+            const paddingY = 20;
+            const renderW = canvas.width - paddingX * 2;
+            const renderH = canvas.height - paddingY * 2;
+
+            ctx.beginPath();
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 3;
+
+            // Trazado de la parábola cinemática acumulada
+            for(let k=0; k<puntos.length; k++) {
+                let px = paddingX + (puntos[k].x / maxX) * renderW;
+                let py = paddingY + (puntos[k].y / maxY) * renderH;
+                if(k === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.stroke();
+
+            // Dibujo del punto de impacto focalizado
+            ctx.beginPath();
+            ctx.arc(paddingX + renderW, paddingY + renderH, 5, 0, 2 * Math.PI);
+            ctx.fillStyle = '#ef4444';
+            ctx.fill();
+
+            // Etiquetas de los ejes vectoriales
+            ctx.fillStyle = '#64748b';
+            ctx.font = '10px monospace';
+            ctx.fillText("V0 (0,0)", 10, 25);
+            ctx.fillText(maxX + " m (Eje X)", canvas.width - 90, canvas.height - 10);
+            ctx.fillText("-" + maxY.toFixed(1) + " m (Caída Y)", canvas.width - 120, paddingY + renderH - 10);
         }
 
-        calcularCaida();
+        // Listener para adaptar el canvas si la pantalla cambia de tamaño de forma responsiva
+        window.addEventListener('resize', ejecutarCalculo);
+
+        // Disparo inicial del script automático
+        ejecutarCalculo();
     </script>
 </body>
 </html>
