@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -12,6 +11,7 @@
             --accent: #e53e3e;
             --dark: #2d3748;
             --light: #f7fafc;
+            --muted: #4a5568;
         }
 
         body {
@@ -26,40 +26,49 @@
         header {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            padding: 3rem 2rem;
+            padding: 4rem 2rem;
             text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
         header h1 {
             margin: 0;
-            font-size: 2.5rem;
+            font-size: 2.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         header p {
-            margin: 0.5rem 0 0;
-            font-size: 1.2rem;
+            margin: 1rem 0 0;
+            font-size: 1.3rem;
             opacity: 0.9;
         }
 
         .container {
             max-width: 1000px;
-            margin: 2rem auto;
+            margin: 3rem auto;
             padding: 0 1.5rem;
         }
 
         section {
             background: white;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            overflow: hidden;
         }
 
         h2 {
             color: var(--primary);
             border-bottom: 2px solid var(--secondary);
-            padding-bottom: 0.5rem;
+            padding-bottom: 0.75rem;
+            margin-top: 0;
+        }
+
+        h3 {
+            color: var(--secondary);
+            margin-top: 2rem;
         }
 
         .formula-box {
@@ -68,15 +77,16 @@
             padding: 1rem;
             margin: 1rem 0;
             font-family: 'Courier New', Courier, monospace;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             overflow-x: auto;
+            color: var(--primary);
         }
 
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1.5rem;
-            margin-top: 1rem;
+            margin-top: 1.5rem;
         }
 
         .card {
@@ -86,12 +96,53 @@
             border-radius: 6px;
         }
 
+        /* Formato de imágenes integradas */
+        .img-inline-right {
+            max-width: 350px;
+            height: auto;
+            float: right;
+            margin: 0 0 1.5rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            border: 2px solid #e2e8f0;
+        }
+
+        .img-trajectory {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            margin: 2rem auto;
+            border-radius: 10px;
+            border: 3px solid #e2e8f0;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.15);
+        }
+
+        .img-rifle-context {
+            max-width: 250px;
+            height: auto;
+            float: left;
+            margin: 1.5rem 1.5rem 1rem 0;
+            border-radius: 6px;
+            border: 1px solid #718096;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 700px) {
+            .img-inline-right, .img-rifle-context {
+                float: none;
+                max-width: 100%;
+                margin: 1rem auto;
+                display: block;
+            }
+        }
+
         /* Estilos del Simulador Balístico */
         .simulator {
-            background: #2d3748;
+            background: linear-gradient(145deg, #2d3748, #1a202c);
             color: white;
-            border-radius: 8px;
-            padding: 2rem;
+            border-radius: 10px;
+            padding: 2.5rem;
+            border: 1px solid #4a5568;
         }
 
         .simulator h2 {
@@ -100,131 +151,151 @@
         }
 
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            clear: both;
         }
 
         label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
             font-weight: bold;
+            font-size: 1.1rem;
         }
 
         input[type="range"] {
             width: 100%;
             margin-bottom: 0.5rem;
+            cursor: pointer;
         }
 
         .range-value {
-            font-size: 1.2rem;
-            color: #fc8181;
+            font-size: 1.4rem;
+            color: #f6ad55;
             font-weight: bold;
+            text-align: center;
+            background: #1a202c;
+            padding: 0.5rem;
+            border-radius: 4px;
         }
 
         .btn {
             background: var(--accent);
             color: white;
             border: none;
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
-            border-radius: 4px;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 6px;
             cursor: pointer;
             width: 100%;
-            transition: background 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background 0.3s, transform 0.1s;
         }
 
         .btn:hover {
             background: #c53030;
         }
+        
+        .btn:active {
+            transform: scale(0.98);
+        }
 
         .results {
-            margin-top: 1.5rem;
-            background: #1a202c;
-            padding: 1rem;
-            border-radius: 6px;
-            border-left: 4px solid var(--accent);
+            margin-top: 2rem;
+            background: rgba(0,0,0,0.3);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 5px solid var(--accent);
         }
 
         .results p {
-            margin: 0.5rem 0;
+            margin: 0.75rem 0;
             font-family: monospace;
-            font-size: 1.05rem;
+            font-size: 1.1rem;
+            color: #e2e8f0;
         }
 
         footer {
             text-align: center;
-            padding: 2rem;
+            padding: 3rem;
             background: var(--dark);
             color: white;
-            margin-top: 4rem;
+            margin-top: 5rem;
+            border-top: 5px solid var(--primary);
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Movimiento Rectilíneo Uniformemente Variado</h1>
-        <p>Fundamentos teóricos y aplicación práctica en balística militar de largo alcance</p>
+        <h1>Física del Movimiento Variado</h1>
+        <p>Análisis conceptual del MRUV aplicado a la Balística de Largo Alcance (.50 BMG)</p>
     </header>
 
     <div class="container">
 
         <section>
             <h2>1. ¿Qué es el MRUV? (Descripción Extensa)</h2>
-            <p>El <strong>Movimiento Rectilíneo Uniformemente Variado (MRUV)</strong>, conocido en algunas regiones como MRUA (Acelerado), es un tipo de movimiento en el cual un objeto se desplaza a lo largo de una <strong>trayectoria rectilínea</strong> (en línea recta) experimentando una <strong>aceleración que permanece constante</strong> en el tiempo.</p>
             
-            <p>A diferencia del Movimiento Rectilíneo Uniforme (MRU), donde la velocidad es constante y la aceleración es nula, en el MRUV la velocidad cambia de manera uniforme. Esto significa que en intervalos de tiempo iguales, la velocidad del móvil aumenta o disminuye exactamente en la misma cantidad.</p>
+            <img src="http://googleusercontent.com/image_collection/image_retrieval/2979942913222313782_0" alt="Gráfica conceptual de MRUV" class="img-inline-right">
+
+            <p>El <strong>Movimiento Rectilíneo Uniformemente Variado (MRUV)</strong>, conocido en algunas regiones como MRUA (Acelerado), es un tipo de movimiento fundamental en la cinemática. Se define por dos condiciones estrictas: el objeto se desplaza a lo largo de una <strong>trayectoria rectilínea</strong> (en línea recta) y experimenta una <strong>aceleración que permanece constante</strong> en magnitud, dirección y sentido durante todo el intervalo de tiempo analizado.</p>
             
-            <h3>Conceptos Clave:</h3>
+            <p>A diferencia del Movimiento Rectilíneo Uniforme (MRU), donde la velocidad es constante y la aceleración es nula, en el MRUV la velocidad cambia de manera uniforme. Esto significa que en intervalos de tiempo iguales (por ejemplo, cada segundo), la velocidad del móvil aumenta (o disminuye) exactamente en la misma cantidad (los m/s ganados o perdidos por segundo son constantes).</p>
+            
+            <h3>Conceptos y Magnitudes Clave:</h3>
             <ul>
-                <li><strong>Posición (d o x):</strong> El lugar que ocupa el cuerpo en el espacio respecto a un punto de referencia. Se mide en metros (m).</li>
-                <li><strong>Velocidad Inicial (v₀):</strong> La velocidad que posee el cuerpo al inicio del intervalo de tiempo observado (t = 0). Se mide en m/s.</li>
-                <li><strong>Velocidad Final (v<sub>f</sub>):</strong> La velocidad del cuerpo al término del intervalo de tiempo analizado. Se mide en m/s.</li>
-                <li><strong>Aceleración (a):</strong> La tasa de cambio de la velocidad por unidad de tiempo. Si es positiva, la velocidad aumenta (movimiento acelerado). Si es negativa, disminuye (movimiento desacelerado o retardado). Se mide en metros por segundo al cuadrado (m/s²).</li>
-                <li><strong>Tiempo (t):</strong> La duración del movimiento. Se mide en segundos (s).</li>
+                <li><strong>Posición (d o x):</strong> El lugar que ocupa el cuerpo en el espacio respecto a un punto de referencia establecido. Se mide en metros (m).</li>
+                <li><strong>Velocidad Inicial (v₀):</strong> La velocidad que posee el cuerpo justo al inicio del intervalo de tiempo que estamos observando (en el instante <span style="font-family:monospace;">t = 0</span>). Se mide en m/s.</li>
+                <li><strong>Velocidad Final (v<sub>f</sub>):</strong> La velocidad instantánea del cuerpo al término del intervalo de tiempo analizado. Se mide en m/s.</li>
+                <li><strong>Aceleración (a):</strong> La tasa constante de cambio de la velocidad por unidad de tiempo. Si es positiva, la velocidad aumenta (acelerado); si es negativa, disminuye (retardado). Se mide en metros por segundo al cuadrado (m/s²).</li>
+                <li><strong>Tiempo (t):</strong> La duración del movimiento estudiado. Se mide en segundos (s).</li>
             </ul>
         </section>
 
         <section>
             <h2>2. Operadores Matemáticos y Ecuaciones del MRUV</h2>
-            <p>Para resolver problemas de MRUV se utilizan cuatro ecuaciones fundamentales. Los operadores principales involucrados son la suma (+), la resta (-), la multiplicación (× o implícita), la división (/) y la potenciación (²).</p>
+            <p>Para resolver problemas de MRUV se utilizan cuatro ecuaciones principales. Los operadores principales involucrados son la suma (+), la resta, la multiplicación (×), la división (/) y la potenciación al cuadrado (²).</p>
             
-            <h3>Ecuación 1: Velocidad en función del tiempo</h3>
-            <p>Se usa cuando no conocemos la distancia recorrida.</p>
+            <h3>Ecuación 1: Velocidad en función del tiempo (Sin Distancia)</h3>
             <div class="formula-box">v_f = v_0 + (a * t)</div>
 
             <h3>Ecuación 2: Distancia en función del tiempo</h3>
-            <p>Permite calcular la posición final conociendo la aceleración.</p>
             <div class="formula-box">d = (v_0 * t) + (0.5 * a * t²)</div>
 
-            <h3>Ecuación 3: Velocidad en función de la distancia</h3>
-            <p>Útil cuando el tiempo es una variable desconocida en el problema.</p>
+            <h3>Ecuación 3: Velocidad en función de la distancia (Sin Tiempo)</h3>
             <div class="formula-box">v_f² = v_0² + (2 * a * d)</div>
 
-            <h3>Ecuación 4: Distancia media</h3>
-            <p>Calcula el espacio recorrido basándose en el promedio de las velocidades.</p>
+            <h3>Ecuación 4: Distancia media (Basada en Promedios)</h3>
             <div class="formula-box">d = [ (v_0 + v_f) / 2 ] * t</div>
         </section>
 
         <section class="simulator">
             <h2>3. Aplicación Práctica: Balística de un Barret Cal. .50</h2>
-            <p>En el plano horizontal, una bala experimenta una desaceleración por resistencia del aire. Sin embargo, en el <strong>eje vertical (Y)</strong>, desde el milisegundo en que el proyectil abandona el cañón de un fusil de precisión <strong>Barret M82 Calibre .50 BMG</strong>, este entra en un MRUV provocado por la <strong>gravedad de la Tierra (g = 9.81 m/s²)</strong>.</p>
+
+            <img src="http://googleusercontent.com/image_collection/image_retrieval/10070791918516705291_0" alt="Fusil de precisión calibre .50" class="img-rifle-context">
+
+            <p>En el eje horizontal (X), una bala experimenta una desaceleración por la resistencia del aire. Sin embargo, en el **eje vertical (Y)**, desde el microsegundo en que el proyectil abandona el cañón de un fusil de precisión **Barret Calibre .50 BMG**, este entra en un régimen de MRUV provocado estrictamente por la **gravedad de la Tierra (g ≈ 9.81 m/s²)**.</p>
             
-            <p>Asumiendo un disparo perfectamente horizontal, la bala viaja hacia adelante a una velocidad promedio altísima, pero cae hacia el suelo con una velocidad inicial vertical de 0 m/s y una aceleración constante de 9.81 m/s².</p>
-            
-            <hr style="border-color: #4a5568; margin: 1.5rem 0;">
+            <p>Asumiendo un disparo perfectamente horizontal (ángulo 0°), la bala viaja hacia adelante a una velocidad inicial promedio altísima, pero cae hacia el suelo con una velocidad inicial vertical de 0 m/s y una aceleración constante de 9.81 m/s² hacia el centro de la Tierra, generando una trayectoria parabólica.</p>
+
+            <img src="http://googleusercontent.com/image_collection/image_retrieval/12967335931675704115_0" alt="Gráfica de trayectoria y caída por gravedad" class="img-trajectory">
+
+            <hr style="border-color: #4a5568; margin: 2rem 0; clear:both;">
 
             <div class="form-group">
                 <label for="distanceRange">Selecciona la distancia del objetivo (Metros):</label>
-                <input type="range" id="distanceRange" min="500" max="3000" step="100" value="1000" oninput="updateDistance(this.value)">
-                <div class="range-value"><span id="distanceLabel">1000</span> metros</div>
+                <input type="range" id="distanceRange" min="500" max="3000" step="100" value="1500" oninput="updateDistance(this.value)">
+                <div class="range-value"><span id="distanceLabel">1500</span> metros</div>
             </div>
 
             <div class="grid">
                 <div class="card" style="color: #2d3748;">
-                    <strong>Datos Fijos del Proyectil:</strong><br>
+                    <strong>Telemetría del Proyectil (Datos Iniciales):</strong><br>
                     • Munición: .50 BMG (M2 Ball)<br>
-                    • Velocidad Salida (v₀ horizontal): 853 m/s<br>
-                    • Aceleración Vertical (Gravedad): 9.81 m/s²
+                    • Velocidad Salida (v₀ Horizontal Promedio): 853 m/s<br>
+                    • Coeficiente de Aceleración Vertical (Gravedad g): 9.81 m/s²
                 </div>
             </div>
             
@@ -233,26 +304,26 @@
 
             <div class="results" id="resultadosContenedor">
                 <h3>Resultados de la Telemetría Computada:</h3>
-                <p>• Tiempo de vuelo estimado (t): <span id="resTiempo">0.00</span> segundos</p>
-                <p>• Velocidad vertical final (v_fy): <span id="resVelocidadY">0.00</span> m/s</p>
-                <p style="font-size: 1.3rem; color: #f6ad55;">• CAÍDA TOTAL DEL PROYECTIL (d_y): <span id="resCaida">0.00</span> metros</p>
+                <p>• Tiempo de vuelo estimado hasta el objetivo (t): <span id="resTiempo">0.000</span> segundos</p>
+                <p>• Velocidad vertical de impacto (v_fy): <span id="resVelocidadY">0.00</span> m/s</p>
+                <p style="font-size: 1.4rem; color: #f6ad55; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">• CAÍDA TOTAL DEL PROYECTIL (d_y): <span id="resCaida">0.00</span> metros</p>
             </div>
         </section>
 
         <section>
-            <h2>4. Desglose del Operador Matemático en el Cálculo</h2>
-            <p>El simulador superior resuelve el problema utilizando dos fases cinemáticas combinadas:</p>
+            <h2>4. Desglose de los Operadores Matemáticos en el Cálculo Balístico</h2>
+            <p>El simulador superior resuelve el problema utilizando dos fases cinemáticas combinadas, descomponiendo la trayectoria:</p>
             <ol>
-                <li><strong>Fase Horizontal (MRU aproximado):</strong> Primero calcula cuánto tiempo tarda la bala en llegar al objetivo usando el operador división: <br><code>t = distancia / velocidad_horizontal</code>.</li>
-                <li><strong>Fase Vertical (MRUV / Caída Libre):</strong> Con el tiempo obtenido, calcula cuántos metros cae la bala debido a la gravedad usando la ecuación 2 del MRUV (<span style="font-family: monospace;">v₀ = 0</span>):<br> <code>Caída = 0.5 * g * t²</code>.</li>
+                <li><strong>Fase Horizontal (MRU):</strong> Primero calcula cuánto tiempo tardará la bala en cubrir la distancia lineal al objetivo, usando el operador división: <br><code>t = distancia / velocidad_horizontal_promedio</code>.</li>
+                <li><strong>Fase Vertical (MRUV / Caída Libre):</strong> Con el tiempo obtenido (<span style="font-family: monospace;">t</span>), calculamos cuántos metros cae la bala debido a la gravedad usando la Ecuación 2 del MRUV, donde sabemos que la <span style="font-family: monospace;">v₀_vertical = 0</span> y la <span style="font-family: monospace;">a_vertical = g</span>:<br> <code>Caída Vertical (d_y) = 0.5 * g * (t²)</code>. <br>Aquí usamos la multiplicación por 0.5 y la potenciación cuadrada.</li>
             </ol>
-            <p><em>Nota técnica: En la realidad extrema, la resistencia aerodinámica reduce la velocidad horizontal, haciendo que el tiempo de vuelo sea aún mayor y, por ende, la caída real sea más drástica de lo que predice el MRUV puro. ¡Por eso un francotirador requiere de computadores balísticos para distancias de hasta 3 km!</em></p>
+            <p><em>Nota técnica importante: En la realidad (balística exterior), la resistencia aerodinámica reduce progresivamente la velocidad horizontal de la bala. Esto hace que el tiempo de vuelo real sea mayor, provocando que la caída real sea más drástica de lo que predice el MRUV puro. ¡A 3000 metros, la bala cae más de 120 metros!</em></p>
         </section>
 
     </div>
 
     <footer>
-        <p>Página de Divulgación Física - Creada para Almacenamiento en GitHub Pages</p>
+        <p>Página de Divulgación Física - Creada para Almacenamiento Interactivo en GitHub Pages</p>
     </footer>
 
     <script>
@@ -261,29 +332,19 @@
         }
 
         function calcularCaida() {
-            // Variables
             const distancia = parseFloat(document.getElementById('distanceRange').value);
-            const v0_horizontal = 853; // m/s velocidad promedio estimada en trayecto largo inicial
-            const g = 9.81; // m/s^2 aceleración de la gravedad
+            const v0_horizontal_avg = 853; 
+            const g = 9.81;
             
-            // 1. Operador división para hallar el tiempo
-            const tiempo = distancia / v0_horizontal;
-            
-            // 2. Operador multiplicación y potencia para hallar la caída vertical (MRUV)
-            // Fórmula: d = 0.5 * g * t^2
-            const caida = 0.5 * g * Math.pow(tiempo, 2);
-            
-            // 3. Operador multiplicación para hallar velocidad vertical final
-            // Fórmula: v_f = g * t
+            const tiempo = distancia / v0_horizontal_avg;
+            const caida_y = 0.5 * g * Math.pow(tiempo, 2);
             const v_fy = g * tiempo;
 
-            // Inyectar datos en el HTML
             document.getElementById('resTiempo').innerText = tiempo.toFixed(3);
             document.getElementById('resVelocidadY').innerText = v_fy.toFixed(2);
-            document.getElementById('resCaida').innerText = caida.toFixed(2);
+            document.getElementById('resCaida').innerText = caida_y.toFixed(2);
         }
 
-        // Ejecutar cálculo inicial al cargar
         calcularCaida();
     </script>
 </body>
